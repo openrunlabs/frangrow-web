@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-red: #D0190F;
+  --color-brand-black: #111111;
+  --color-brand-grayBg: #FAFAFA;
+  --color-brand-border: #EBEBEB;
+  --color-brand-muted: #71717A;
+  --radius-brand: 18px;
+  --font-sans: 'Pretendard', -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+}
