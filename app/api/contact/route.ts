@@ -40,8 +40,12 @@ export async function POST(request: Request) {
     if (error) throw error;
 
     await resend.emails.send({
-      from: "FRANGROW <onboarding@resend.dev>",
-      to: ["frangrow@naver.com"],
+      from: "프차그로우 <contact@frangrow.kr>",
+      to: [
+       "frangrow@naver.com",
+       "brandity_official@naver.com",
+       "jybest-consult@naver.com"
+      ],
       subject: `[프차그로우] 새 상담신청 — ${body.company_name} ${body.name}`,
       html: `
         <h2 style="color:#D0190F">새 상담신청이 접수되었습니다</h2>
