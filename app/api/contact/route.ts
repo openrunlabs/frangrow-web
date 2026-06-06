@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { Resend } from "resend";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
-const supabase = createClient(supabaseUrl, supabaseKey);
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
@@ -35,6 +38,26 @@ export async function POST(request: Request) {
       }]);
 
     if (error) throw error;
+
+    await resend.emails.send({
+      from: "FRANGROW <onboarding@resend.dev>",
+      to: ["frangrow@naver.com"],
+      subject: `[프차그로우] 새 상담신청 — ${body.company_name} ${body.name}`,
+      html: `
+        <h2 style="color:#D0190F">새 상담신청이 접수되었습니다</h2>
+        <table style="border-collapse:collapse;width:100%;font-family:sans-serif">
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold;width:120px">이름</td><td style="padding:8px;border:1px solid #eee">${body.name}</td></tr>
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold">직책</td><td style="padding:8px;border:1px solid #eee">${body.role}</td></tr>
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold">연락처</td><td style="padding:8px;border:1px solid #eee">${body.phone}</td></tr>
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold">회사명</td><td style="padding:8px;border:1px solid #eee">${body.company_name}</td></tr>
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold">업종</td><td style="padding:8px;border:1px solid #eee">${body.industry}</td></tr>
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold">관심 솔루션</td><td style="padding:8px;border:1px solid #eee">${(body.target_solutions || []).join(", ")}</td></tr>
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold">문의내용</td><td style="padding:8px;border:1px solid #eee">${body.content}</td></tr>
+          <tr><td style="padding:8px;border:1px solid #eee;font-weight:bold">유입경로</td><td style="padding:8px;border:1px solid #eee">${body.utm_source} / ${body.utm_medium}</td></tr>
+        </table>
+        <p style="margin-top:16px;color:#888;font-size:12px">접수 시간: ${new Date().toLocaleString("ko-KR", {timeZone:"Asia/Seoul"})}</p>
+      `,
+    });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error: unknown) {
