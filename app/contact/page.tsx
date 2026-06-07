@@ -83,7 +83,24 @@ export default function ContactPage() {
                 <div><label className="block text-xs font-bold text-[#111111] mb-2">직책 *</label><input required type="text" name="role" className="w-full text-sm p-4 bg-white border border-[#EBEBEB] rounded-[18px] focus:outline-none focus:border-[#D0190F]" placeholder="대표이사 / 본부장" /></div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div><label className="block text-xs font-bold text-[#111111] mb-2">연락처 *</label><input required type="tel" name="phone" className="w-full text-sm p-4 bg-white border border-[#EBEBEB] rounded-[18px] focus:outline-none focus:border-[#D0190F]" placeholder="010-0000-0000" /></div>
+                <div><label className="block text-xs font-bold text-[#111111] mb-2">연락처 *</label><input
+  required
+  type="tel"
+  name="phone"
+  className="w-full text-sm p-4 bg-white border border-[#EBEBEB] rounded-[18px] focus:outline-none focus:border-[#D0190F]"
+  placeholder="010-0000-0000"
+  maxLength={13}
+  onChange={(e) => {
+    const nums = e.target.value.replace(/[^0-9]/g, "");
+    let formatted = nums;
+    if (nums.length <= 3) formatted = nums;
+    else if (nums.length <= 7) formatted = `${nums.slice(0,3)}-${nums.slice(3)}`;
+    else formatted = `${nums.slice(0,3)}-${nums.slice(3,7)}-${nums.slice(7,11)}`;
+    e.target.value = formatted;
+  }}
+  pattern="\d{3}-\d{4}-\d{4}"
+  title="010-0000-0000 형식으로 입력해주세요"
+/>
                 <div><label className="block text-xs font-bold text-[#111111] mb-2">회사명 (브랜드명) *</label><input required type="text" name="company_name" className="w-full text-sm p-4 bg-white border border-[#EBEBEB] rounded-[18px] focus:outline-none focus:border-[#D0190F]" placeholder="주식회사 에프앤비코리아" /></div>
               </div>
               <div>
@@ -162,4 +179,3 @@ export default function ContactPage() {
       )}
     </div>
   );
-}
