@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 
 type ViewState = "home" | "services" | "contact";
 
@@ -47,16 +48,17 @@ export default function FrangrowPage() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [currentView, activeTab]);
 
-  const go = useCallback((v: ViewState) => {
-    setCurrentView(v);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+const router = useRouter();
+const go = useCallback((v: ViewState) => {
+  if (v === "home") router.push("/");
+  if (v === "services") router.push("/services");
+  if (v === "contact") router.push("/contact");
+}, [router]);
 
-  const goService = useCallback((tab: number) => {
-    setCurrentView("services");
-    setActiveTab(tab);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+const goService = useCallback((tab: number) => {
+  router.push(`/services`);
+  setTimeout(() => setActiveTab(tab), 100);
+}, [router]);
 
   const goContactWithSol = useCallback((solIdx: number) => {
     setCurrentView("contact");
